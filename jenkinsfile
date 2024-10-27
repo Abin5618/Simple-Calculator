@@ -35,7 +35,7 @@ pipeline {
                 script {
                     // Define Tomcat server details
                     def tomcatUrl = 'http://localhost:8080/manager/text'
-                    def warFile = 'target\simple-calculator-1.0-SNAPSHOT.war' // Update with the actual WAR file name
+                    def warFile = 'target//simple-calculator-1.0-SNAPSHOT.war' // Update with the actual WAR file name
                     def tomcatUsername = 'admin' // Set this in Jenkins credentials
                     def tomcatPassword = 'admin' // Set this in Jenkins credentials
 
