@@ -5,13 +5,13 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the Git repository
-                git 'https://github.com/nejuvj/Simple-Calculator.git'
+                git 'https://github.com/Abin5618/Simple-Calculator.git'
             }
         }
         
         stage('Build') {
             steps {
-                // Use Maven to build the project (assuming it's a Maven project)
+                // Use Maven to build the project
                 sh 'mvn clean install'
             }
         }
@@ -29,6 +29,21 @@ pipeline {
                 sh 'mvn package'
             }
         }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    // Define Tomcat server details
+                    def tomcatUrl = 'http://localhost:8080/manager/text'
+                    def warFile = 'target\simple-calculator-1.0-SNAPSHOT.war' // Update with the actual WAR file name
+                    def tomcatUsername = 'admin' // Set this in Jenkins credentials
+                    def tomcatPassword = 'admin' // Set this in Jenkins credentials
+
+                    // Deploy the WAR file using curl
+                    sh "curl -u ${tomcatUsername}:${tomcatPassword} -T ${warFile} ${tomcatUrl}/deploy?path=/simplecalculator&update=true"
+                }
+            }
+        }
     }
     
     post {
@@ -38,4 +53,5 @@ pipeline {
         }
     }
 }
+
 
