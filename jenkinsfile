@@ -30,17 +30,32 @@ pipeline {
             }
         }
 
+        stage('List WAR File') {
+            steps {
+                // List contents of the target directory to verify WAR file creation
+                sh 'ls -l target/' // List contents of the target directory
+            }
+        }
+
         stage('Deploy to Tomcat') {
             steps {
                 script {
                     // Define Tomcat server details
                     def tomcatUrl = 'http://localhost:8080/manager/text'
-                    def warFile = 'target//simple-calculator-1.0-SNAPSHOT.war' // Update with the actual WAR file name
-                    def tomcatUsername = 'admin' // Set this in Jenkins credentials
-                    def tomcatPassword = 'admin' // Set this in Jenkins credentials
+                    def warFile = 'target/simple-calculator-1.0-SNAPSHOT.war' // Correct WAR file path
+                    def tomcatUsername = 'admin' // Tomcat username
+                    def tomcatPassword = 'admin' // Tomcat password
 
                     // Deploy the WAR file using curl
-                    sh "curl -u ${tomcatUsername}:${tomcatPassword} -T ${warFile} ${tomcatUrl}/deploy?path=/simplecalculator&update=true"
+                    sh """
+                    curl -u ${tomcatUsername}:${tomcatPassword} -T ${warFile} ${tomcatUrl}/deploy?path=/simplecalculator&update=true
+                    if [ \$? -eq 0 ]; then
+                        echo "Deployment successful"
+                    else
+                        echo "Deployment failed"
+                        exit 1
+                    fi
+                    """
                 }
             }
         }
@@ -53,5 +68,6 @@ pipeline {
         }
     }
 }
+
 
 
