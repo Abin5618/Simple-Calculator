@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // Clone the Git repository
+                git 'https://github.com/nejuvj/Simple-Calculator.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Use Maven to build the project (assuming it's a Maven project)
+                sh 'mvn clean install'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                // Run tests (Maven will run tests by default)
+                sh 'mvn test'
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                // Package the application
+                sh 'mvn package'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Archive test results or logs
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+        }
+    }
+}
+
